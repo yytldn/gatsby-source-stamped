@@ -7,7 +7,7 @@ const CACHE_KEY_CACHED_REVIEWS = "cachedReviews";
 const CACHE_KEY_PRODUCTS = "products"
 
 exports.onPreInit = (_, pluginOptions) => {
-  console.info(`Loaded gatsby-source-stamped plugin`);
+  console.info("Loaded gatsby-source-stamped plugin");
 }
 
 exports.pluginOptionsSchema = ({Joi}) => {

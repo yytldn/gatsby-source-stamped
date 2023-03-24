@@ -125,4 +125,4 @@ To query for a single `stampedRatingSummary` node for a product:
 
 ## Credits
 
-Plugin created and maintained [YYT](https://yyt.dev) eCommerce development team.
+Plugin created and maintained by [YYT](https://yyt.dev) eCommerce development team.
