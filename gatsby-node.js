@@ -14,7 +14,8 @@ exports.pluginOptionsSchema = ({Joi}) => {
   return Joi.object().keys({
     publicKey: Joi.string().required().description(`Public key`),
     privateKey: Joi.string().required().description(`Private key`),
-    storeHash: Joi.string().required().description(`Store hash`)
+    storeHash: Joi.string().required().description(`Store hash`),
+    disableCache: Joi.boolean().description(`Disable plugin cache`)
   });
 }
 
@@ -28,6 +29,22 @@ const validateStampedAccess = async (pluginOptions) => {
   }
 };
 
+const getCacheData = async (isCacheEnabled, cache, key) => {
+  if (isCacheEnabled !== true) {
+    return null;
+  }
+
+  return await cache.get(key);
+}
+
+const setCacheData = async (isCacheEnabled, cache, key, value) => {
+  if (isCacheEnabled !== true) {
+    return;
+  }
+
+  return await cache.set(key, value);
+}
+
 const NODE_TYPE_REVIEW = `StampedReview`
 const NODE_TYPE_RATING_SUMMARY = `StampedRatingSummary`
 
@@ -37,11 +54,13 @@ exports.sourceNodes = async (
 ) => {
   await validateStampedAccess(pluginOptions);
 
-  const {publicKey, privateKey, storeHash} = pluginOptions;
+  const {publicKey, privateKey, storeHash, disableCache} = pluginOptions;
 
-  const lastFetched = await cache.get(CACHE_KEY_LAST_FETCHED);
-  const cachedReviews = await cache.get(CACHE_KEY_CACHED_REVIEWS);
-  const products = await cache.get(CACHE_KEY_PRODUCTS);
+  const isCacheEnabled = disableCache !== true;
+
+  const lastFetched = await getCacheData(isCacheEnabled, cache, CACHE_KEY_LAST_FETCHED);
+  const cachedReviews = await getCacheData(isCacheEnabled, cache, CACHE_KEY_CACHED_REVIEWS);
+  const products = await getCacheData(isCacheEnabled, cache, CACHE_KEY_PRODUCTS);
 
   const reviews = await getReviews(publicKey, privateKey, storeHash, lastFetched);
 
@@ -84,9 +103,9 @@ exports.sourceNodes = async (
 
     if (!cachedReviewIds.includes(nodeId)) {
       cachedReviewIds.push(nodeId);
-
-      await cache.set(nodeId, nodeId);
     }
+
+    await setCacheData(isCacheEnabled, cache, nodeId, nodeId);
   }
 
   for (let i = 0; i < cachedReviewIds.length; i++) {
@@ -96,7 +115,7 @@ exports.sourceNodes = async (
       continue;
     }
 
-    const existingNodeId = await cache.get(reviewId);
+    const existingNodeId = await getCacheData(isCacheEnabled, cache, reviewId);
 
     if (!existingNodeId || typeof existingNodeId === "undefined") {
       continue;
@@ -109,10 +128,10 @@ exports.sourceNodes = async (
     }
   }
 
-  await cache.set(CACHE_KEY_CACHED_REVIEWS, cachedReviewIds);
+  await setCacheData(isCacheEnabled, cache, CACHE_KEY_CACHED_REVIEWS, cachedReviewIds);
 
   if (newLastFetched) {
-    await cache.set(CACHE_KEY_LAST_FETCHED, newLastFetched);
+    await setCacheData(isCacheEnabled, cache, CACHE_KEY_LAST_FETCHED, newLastFetched);
   }
 
   const ratings = await getProductRatingsSummary(publicKey, storeHash, productIds);
@@ -130,5 +149,5 @@ exports.sourceNodes = async (
     })
   })
 
-  await cache.set(CACHE_KEY_PRODUCTS, productIds);
+  await setCacheData(isCacheEnabled, cache, CACHE_KEY_PRODUCTS, productIds);
 };
