@@ -44,17 +44,21 @@ module.exports = {
 
 Your keys and store hash can be downloaded from your [Stamped](https://stamped.io/) dashboard.
 
-**`publicKey`** [string][required]
-
 Stamped public key
 
-**`privateKey`** [string][required]
+**`publicKey`** [string][required]
 
 Stamped private key
 
-**`storeHash`** [string][required]
+**`privateKey`** [string][required]
 
 Stamped store hash
+
+**`storeHash`** [string][required]
+
+Disable plugin cache (optional)
+
+**`disableCache`** [boolean][optional]
 
 ## How to query for reviews
 
@@ -93,6 +97,7 @@ To query for all reviews associated to a product:
         review {
           id
           rating
+          title
           body
           author
           date: dateCreated(formatString: "MM/DD/YYYY")
@@ -120,4 +125,4 @@ To query for a single `stampedRatingSummary` node for a product:
 
 ## Credits
 
-Plugin created and maintained by [YYT](https://yyt.dev) eCommerce development team.
+Plugin created and maintained [YYT](https://yyt.dev) eCommerce development team.
