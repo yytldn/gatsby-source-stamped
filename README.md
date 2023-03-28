@@ -4,14 +4,14 @@
 <summary><strong>Table of contents</strong></summary>
 
 - [gatsby-source-stamped](#gatsby-source-stamped)
-    - [Install](#install)
-    - [Setup Instructions](#setup-instructions)
-        - [Configuration](#configuration)
-        - [Configuration options](#configuration-options)
-    - [How to query for reviews](#how-to-query-for-reviews)
-        - [Reviews](#reviews)
-        - [Product rating summary](#product-rating-summary)
-    - [Credits](#credits)
+  - [Install](#install)
+  - [Setup Instructions](#setup-instructions)
+    - [Configuration](#configuration)
+    - [Configuration options](#configuration-options)
+  - [How to query for reviews](#how-to-query-for-reviews)
+    - [Reviews](#reviews)
+    - [Product rating summary](#product-rating-summary)
+  - [Credits](#credits)
 </details>
 
 ## Install
@@ -86,7 +86,7 @@ To query for all reviews:
 }
 ```
 
-To query for all reviews associated to a product:
+To query for all reviews associated with a product:
 
 ```graphql
 {
