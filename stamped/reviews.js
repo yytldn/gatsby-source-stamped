@@ -32,11 +32,19 @@ const getReviewsData = async (publicKey, privateKey, storeHash, lastFetched = nu
     console.info(`Fetching Stamped reviews, page ${page}`)
   }
 
-  return await client
+  let result = false;
+  
+  try {
+    result = await client
     .get(endpoint)
     .then((res) => {
       return res.data
     });
+  } catch (e) {
+    console.log(`Error while fetching reviews for page ${page}`);
+  }
+
+  return result;
 }
 
 module.exports = {
