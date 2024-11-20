@@ -1,4 +1,3 @@
-const {authCheck} = require("./stamped/check");
 const {getReviews} = require("./stamped/reviews");
 const {getProductRatingsSummary} = require("./stamped/ratings");
 
@@ -18,16 +17,6 @@ exports.pluginOptionsSchema = ({Joi}) => {
     disableCache: Joi.boolean().description(`Disable plugin cache`)
   });
 }
-
-const validateStampedAccess = async (pluginOptions) => {
-  try {
-    await authCheck(pluginOptions.publicKey, pluginOptions.privateKey);
-  } catch (err) {
-    throw new Error(
-      `Cannot access Stamped with the provided keys. Double check that they are correct and try again!`
-    )
-  }
-};
 
 const getCacheData = async (isCacheEnabled, cache, key) => {
   if (isCacheEnabled !== true) {
@@ -52,8 +41,6 @@ exports.sourceNodes = async (
   {cache, actions: {createNode, touchNode}, createContentDigest, createNodeId, getNode},
   pluginOptions
 ) => {
-  await validateStampedAccess(pluginOptions);
-
   const {publicKey, privateKey, storeHash, disableCache} = pluginOptions;
 
   const isCacheEnabled = disableCache !== true;
